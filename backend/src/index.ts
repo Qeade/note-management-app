@@ -1,12 +1,15 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from "express";
+import cors from "cors";
+import notesRouter from "./routes/notes";
 
 const app: Application = express();
-const PORT = 3000;
+const port = 3000;
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, TypeScript + Express!');
-});
+app.use(cors());
+app.use(express.json());
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+app.use("/notes", notesRouter);
+
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
 });
