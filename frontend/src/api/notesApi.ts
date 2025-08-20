@@ -4,6 +4,7 @@ import { Note } from "../types";
 export const notesApi = {
     getAll: async (): Promise<Note[]> => {
         const res = await axiosClient.get("/notes");
+        console.log("getAll front");
         return res.data;
     },
 
