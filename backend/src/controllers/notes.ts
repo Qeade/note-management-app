@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as Notes from "../models/notes";
 
 export const getAll = (req: Request, res: Response): void => {
+    console.log("getAll api");
     const allNotes = Notes.getAll();
     res.json(allNotes);
 };

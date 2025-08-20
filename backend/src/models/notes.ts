@@ -3,7 +3,10 @@ export interface Note {
     text: string;
 }
 
-let notes: Note[] = [];
+let notes: Note[] = [
+    { id: 1, text: "Перша" },
+    { id: 2, text: "Друга" }
+];
 
 export const getAll = (): Note[] => notes;
 
