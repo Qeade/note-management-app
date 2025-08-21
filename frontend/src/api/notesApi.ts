@@ -1,10 +1,10 @@
-import axiosClient from "./axiosClient";
-import { Note } from "../types";
+import axiosClient from './axiosClient';
+import { Note } from '../types';
 
 export const notesApi = {
     getAll: async (): Promise<Note[]> => {
-        const res = await axiosClient.get("/notes");
-        console.log("getAll front");
+        const res = await axiosClient.get('/notes');
+        console.log('getAll front');
         return res.data;
     },
 
@@ -13,12 +13,12 @@ export const notesApi = {
         return res.data;
     },
 
-    create: async (note: Omit<Note, "id">): Promise<Note> => {
-        const res = await axiosClient.post("/notes", note);
+    create: async (note: Omit<Note, 'id' | 'createdAt'>): Promise<Note> => {
+        const res = await axiosClient.post('/notes', note);
         return res.data;
     },
 
-    update: async (id: number, note: Omit<Note, "id">): Promise<Note> => {
+    update: async (id: number, note: Omit<Note, 'id' | 'createdAt'>): Promise<Note> => {
         const res = await axiosClient.put(`/notes/${id}`, note);
         return res.data;
     },
@@ -27,4 +27,3 @@ export const notesApi = {
         await axiosClient.delete(`/notes/${id}`);
     },
 };
-
