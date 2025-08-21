@@ -1,50 +1,76 @@
-# Welcome to your Expo app 👋
+# Frontend: Note Management Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> The client-side of the Note Management application, built with React Native and Expo. It provides a user interface to interact with the backend API.
 
-## Get started
+This mobile application allows users to create, view, update, and delete notes. It features state management with Redux, multi-language support (English & Ukrainian), and is styled using NativeWind.
 
-1. Install dependencies
+## 🚀 Tech Stack
 
-   ```bash
-   npm install
-   ```
+- **Framework:** React Native with Expo
+- **State Management:** Redux Toolkit
+- **Styling:** NativeWind (Tailwind CSS)
+- **API Client:** Axios
+- **Localization:** i18next
 
-2. Start the app
+## ▶️ Getting Started
 
-   ```bash
-   npx expo start
-   ```
+Follow these instructions to get the frontend application running on your local machine for development and testing.
 
-In the output, you'll find options to open the app in a
+### Prerequisites
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Before you begin, ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (LTS version recommended)
+- [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
+- [Git](https://git-scm.com/)
+- [ngrok](https://ngrok.com/download) account and CLI
+- The **Expo Go** app on your iOS or Android device.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 1. Installation
 
-## Get a fresh project
+First, clone the repository and install the necessary dependencies.
 
-When you're ready, run:
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/Qeade/note-management-app.git
+    ```
 
-```bash
-npm run reset-project
-```
+2.  **Navigate to the frontend directory:**
+    ```sh
+    cd note-management-app/frontend
+    ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3.  **Install dependencies:**
+    ```sh
+    npm install
+    ```
 
-## Learn more
+### 2. Configuration: Connecting to the Backend API
 
-To learn more about developing your project with Expo, look at the following resources:
+The Expo Go app on your phone cannot directly access a backend server running on `localhost`. Additionally, mobile devices often require secure `https://` connections. We will use **ngrok** to create a secure public URL for your local backend server.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1.  **Start your backend server.** Make sure it is running locally (e.g., on port 3000).
 
-## Join the community
+2.  **Launch ngrok** to expose your backend's port. Open a **new terminal** and run the following command (use the port your backend is running on):
+    ```sh
+    ngrok http 3000
+    ```
 
-Join our community of developers creating universal apps.
+3.  **Copy the ngrok URL.** After running the command, ngrok will provide a "Forwarding" URL that looks something like this: `https://your-unique-hash.ngrok-free.app`. **Copy the `https` URL.**
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+4.  **Create an environment file.** In the `frontend` directory, create a new file named `.env`.
+
+5.  **Add the API URL to the `.env` file.** Paste the ngrok URL you copied into the file, like this:
+    ```
+    API_URL=https://your-unique-hash.ngrok-free.app
+    ```
+
+### 3. Running the Application
+
+Now that the connection to the backend is configured, you can run the mobile app.
+
+1.  **Start the Expo development server.** For the best experience with physical devices, use the `--tunnel` option. This helps the Expo Go app connect reliably to your computer.
+    ```sh
+    npx expo start --tunnel
+    ```
+
+2.  **Connect your device.** A QR code will appear in the terminal. Open the Expo Go app on your phone and scan the QR code to launch the application. The app will now be able to communicate with your local backend through the ngrok tunnel.

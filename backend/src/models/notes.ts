@@ -8,14 +8,8 @@ export interface Note {
 let notes: Note[] = [
     {
         id: 1,
-        title: 'Перша нотатка',
-        text: 'Це текст першої нотатки',
-        createdAt: new Date().toISOString(),
-    },
-    {
-        id: 2,
-        title: 'Друга нотатка',
-        text: 'Це текст другої нотатки',
+        title: 'First note',
+        text: 'This is a new note',
         createdAt: new Date().toISOString(),
     },
 ];
@@ -47,7 +41,6 @@ export const update = (id: number, title: string, text: string): Note | undefine
 
     note.title = title;
     note.text = text;
-    // createdAt залишається без змін
 
     return note;
 };
