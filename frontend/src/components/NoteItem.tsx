@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '../hooks/redux';
 import { AppDispatch } from '../store';
 import { updateNote, deleteNote } from '../features/notes/notesThunks';
 import { Note } from '../types';
@@ -12,15 +14,18 @@ interface NoteItemProps {
 
 export default function NoteItem({ note }: NoteItemProps) {
     const dispatch = useDispatch<AppDispatch>();
+    const { t } = useTranslation();
+    const currentLanguage = useAppSelector((state) => state.language.currentLanguage);
+
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(note.title);
     const [editText, setEditText] = useState(note.text);
 
     const handleDelete = () => {
-        Alert.alert('Видалення нотатки', 'Ви впевнені, що хочете видалити цю нотатку?', [
-            { text: 'Скасувати', style: 'cancel' },
+        Alert.alert(t('notes.deleteNote'), t('notes.deleteConfirm'), [
+            { text: t('common.cancel'), style: 'cancel' },
             {
-                text: 'Видалити',
+                text: t('common.delete'),
                 style: 'destructive',
                 onPress: () => dispatch(deleteNote(note.id)),
             },
@@ -37,7 +42,7 @@ export default function NoteItem({ note }: NoteItemProps) {
             );
             setIsEditing(false);
         } else {
-            Alert.alert('Помилка', 'Заголовок і текст не можуть бути пустими');
+            Alert.alert(t('common.error'), t('notes.validation.emptyFields'));
         }
     };
 
@@ -49,7 +54,10 @@ export default function NoteItem({ note }: NoteItemProps) {
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('uk-UA', {
+
+        const locale = currentLanguage === 'uk' ? 'uk-UA' : 'en-US';
+
+        return date.toLocaleDateString(locale, {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -66,7 +74,7 @@ export default function NoteItem({ note }: NoteItemProps) {
                         value={editTitle}
                         onChangeText={setEditTitle}
                         className="border border-gray-200 rounded-xl p-4 mb-4 text-lg font-medium bg-gray-50 text-gray-800"
-                        placeholder="Заголовок нотатки..."
+                        placeholder={t('notes.noteTitle')}
                         placeholderTextColor="#9CA3AF"
                     />
                     <TextInput
@@ -74,13 +82,13 @@ export default function NoteItem({ note }: NoteItemProps) {
                         onChangeText={setEditText}
                         multiline
                         className="border border-gray-200 rounded-xl p-4 mb-6 text-base min-h-[80px] bg-gray-50 text-gray-700 leading-6"
-                        placeholder="Введіть текст нотатки..."
+                        placeholder={t('notes.noteContent')}
                         placeholderTextColor="#9CA3AF"
                     />
                     <View className="flex-row gap-3">
                         <TouchableOpacity
                             onPress={handleSave}
-                            className="bg-green-600  px-6 py-3 rounded-xl flex-1 flex-row justify-center items-center shadow-sm"
+                            className="bg-green-600 px-6 py-3 rounded-xl flex-1 flex-row justify-center items-center shadow-sm"
                         >
                             <Ionicons
                                 name="checkmark"
@@ -88,13 +96,17 @@ export default function NoteItem({ note }: NoteItemProps) {
                                 color="white"
                                 style={{ marginRight: 6 }}
                             />
-                            <Text className="text-white font-medium text-center">Зберегти</Text>
+                            <Text className="text-white font-medium text-center">
+                                {t('common.save')}
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleCancel}
                             className="bg-gray-300 px-6 py-3 rounded-xl flex-1 flex-row justify-center items-center"
                         >
-                            <Text className="text-gray-700 font-medium text-center">Скасувати</Text>
+                            <Text className="text-gray-700 font-medium text-center">
+                                {t('common.cancel')}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </>
@@ -123,7 +135,9 @@ export default function NoteItem({ note }: NoteItemProps) {
                                 color="white"
                                 style={{ marginRight: 6 }}
                             />
-                            <Text className="text-white font-medium text-center">Редагувати</Text>
+                            <Text className="text-white font-medium text-center">
+                                {t('common.edit')}
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleDelete}
@@ -135,7 +149,9 @@ export default function NoteItem({ note }: NoteItemProps) {
                                 color="white"
                                 style={{ marginRight: 6 }}
                             />
-                            <Text className="text-white font-medium text-center">Видалити</Text>
+                            <Text className="text-white font-medium text-center">
+                                {t('common.delete')}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </>

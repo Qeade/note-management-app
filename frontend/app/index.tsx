@@ -7,23 +7,28 @@ import {
     TextInput,
     Alert,
     ActivityIndicator,
+    Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { RootState, AppDispatch } from '../src/store';
 import { fetchNotes, createNote } from '../src/features/notes/notesThunks';
 import { clearError } from '../src/features/notes/notesSlice';
 import { Note } from '../src/types';
 import NoteItem from '../src/components/NoteItem';
+import LanguageSwitcher from '../src/components/LanguageSwitcher';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function NotesScreen() {
     const dispatch = useDispatch<AppDispatch>();
     const { items, loading, error } = useSelector((state: RootState) => state.notes);
+    const { t } = useTranslation();
 
     const [newNoteTitle, setNewNoteTitle] = useState('');
     const [newNoteText, setNewNoteText] = useState('');
+    const [showLanguageModal, setShowLanguageModal] = useState(false);
 
     useEffect(() => {
         dispatch(fetchNotes());
@@ -31,10 +36,10 @@ export default function NotesScreen() {
 
     useEffect(() => {
         if (error) {
-            Alert.alert('Помилка', error);
+            Alert.alert(t('common.error'), error);
             dispatch(clearError());
         }
-    }, [error, dispatch]);
+    }, [error, dispatch, t]);
 
     const handleCreateNote = async () => {
         if (newNoteTitle.trim() && newNoteText.trim()) {
@@ -47,7 +52,10 @@ export default function NotesScreen() {
             setNewNoteTitle('');
             setNewNoteText('');
         } else {
-            Alert.alert('Помилка', 'Заголовок і текст не можуть бути пустими');
+            Alert.alert(
+                t('common.error'),
+                t('notes.validation.emptyFields') || 'Заголовок і текст не можуть бути пустими',
+            );
         }
     };
 
@@ -55,14 +63,21 @@ export default function NotesScreen() {
 
     return (
         <>
-            <Stack.Screen options={{ title: 'Мої нотатки', headerShown: false }} />
+            <Stack.Screen options={{ title: t('notes.title'), headerShown: false }} />
             <SafeAreaView className="flex-1 bg-gray-50">
                 <View className="flex-1 bg-gray-50 px-6 pt-14">
-                    <View className="flex-row justify-center items-center mb-8">
-                        <Ionicons name="document-text" size={26} color="#6B7280" />
-                        <Text className="text-3xl font-semibold ml-3 text-gray-800">
-                            Мої нотатки
-                        </Text>
+                    <View className="flex-row justify-between items-center mb-8">
+                        <View className="flex-row items-center">
+                            <Ionicons name="document-text" size={26} color="#6B7280" />
+                            <Text className="text-3xl font-semibold ml-3 text-gray-800">
+                                {t('notes.title')}
+                            </Text>
+                        </View>
+
+                        <View className="flex-row items-center bg-white rounded-full px-3 py-2 shadow-sm">
+                            <Ionicons name="language" size={18} color="#6B7280" />
+                            <LanguageSwitcher />
+                        </View>
                     </View>
 
                     <View className="bg-white p-6 mb-6 rounded-2xl shadow-sm border border-gray-100">
@@ -70,7 +85,7 @@ export default function NotesScreen() {
                             value={newNoteTitle}
                             onChangeText={setNewNoteTitle}
                             className="border border-gray-200 rounded-xl p-4 mb-4 text-base bg-gray-50"
-                            placeholder="Заголовок нотатки..."
+                            placeholder={t('notes.noteTitle')}
                             placeholderTextColor="#9CA3AF"
                         />
                         <TextInput
@@ -78,12 +93,12 @@ export default function NotesScreen() {
                             onChangeText={setNewNoteText}
                             multiline
                             className="border border-gray-200 rounded-xl p-4 mb-5 text-base min-h-[90px] bg-gray-50"
-                            placeholder="Введіть текст нотатки..."
+                            placeholder={t('notes.noteContent')}
                             placeholderTextColor="#9CA3AF"
                         />
                         <TouchableOpacity
                             onPress={handleCreateNote}
-                            className="bg-green-600  py-4 rounded-xl flex-row justify-center items-center shadow-sm"
+                            className="bg-green-600 py-4 rounded-xl flex-row justify-center items-center shadow-sm"
                             disabled={!newNoteTitle.trim() || !newNoteText.trim() || loading}
                             style={{
                                 opacity:
@@ -107,7 +122,9 @@ export default function NotesScreen() {
                                 />
                             )}
                             <Text className="text-white font-medium text-center text-base">
-                                {loading ? 'Створення...' : 'Створити нотатку'}
+                                {loading
+                                    ? t('notes.creating') || 'Створення...'
+                                    : t('notes.addNote')}
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -115,7 +132,9 @@ export default function NotesScreen() {
                     {loading && items.length === 0 ? (
                         <View className="flex-1 justify-center items-center">
                             <ActivityIndicator size="large" color="#34D399" />
-                            <Text className="mt-3 text-gray-500 font-medium">Завантаження...</Text>
+                            <Text className="mt-3 text-gray-500 font-medium">
+                                {t('common.loading')}
+                            </Text>
                         </View>
                     ) : (
                         <FlatList
@@ -134,11 +153,11 @@ export default function NotesScreen() {
                                         />
                                     </View>
                                     <Text className="text-gray-600 text-lg font-medium mb-2">
-                                        Нотаток поки немає
+                                        {t('notes.emptyNotes')}
                                     </Text>
                                     <Text className="text-gray-400 text-center px-8 leading-5">
-                                        Створіть свою першу нотатку, щоб почати організовувати свої
-                                        думки
+                                        {t('notes.emptyNotesDescription') ||
+                                            'Створіть свою першу нотатку, щоб почати організовувати свої думки'}
                                     </Text>
                                 </View>
                             }
